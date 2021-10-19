@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Form, Input, Button, Select, Switch, DatePicker } from 'antd';
 import { initPackSet } from '@oyster/common/dist/lib/models/metaplex/initPackSet';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -10,11 +10,16 @@ import {
 import { sendTransactionWithRetry, useConnection } from '@oyster/common';
 
 import { PACK_CREATE_ID } from '../../../utils/ids';
+import { CreatePackSteps } from '../createPackStepper/types';
 
 const { Option } = Select;
 const valueU32 = 4294967295;
 
-function CreatePack({ confirm }) {
+interface CreatePackProps {
+  confirm: (step?: CreatePackSteps) => void
+}
+
+const CreatePack = ({ confirm }: CreatePackProps): ReactElement => {
   const wallet = useWallet();
   const connection = useConnection();
 
@@ -28,7 +33,7 @@ function CreatePack({ confirm }) {
         'single',
       ).then(res => {
         console.log('setupInitPackInstructions:', res);
-        confirm(1);
+        confirm(CreatePackSteps.AddVoucher);
       });
     });
   };

@@ -7,6 +7,7 @@ import Masonry from 'react-masonry-css';
 import { useArt } from '../../../hooks';
 import { MetaAvatar } from '../../../components/MetaAvatar';
 import { ArtContent } from '../../../components/ArtContent';
+import { CreatePackSteps } from '../createPackStepper/types';
 
 const breakpointColumnsListObj = {
   default: 1,
@@ -21,7 +22,7 @@ function AddCard({
 }) {
   const onSubmit = (values: any) => {
     console.log('Success:', values);
-    confirm(3);
+    confirm(CreatePackSteps.Final);
   };
 
   const onSubmitFailed = (errorInfo: any) => {

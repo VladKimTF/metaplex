@@ -7,22 +7,13 @@ import AddVoucher from '../voucher';
 import AddCard from '../card';
 import FinalStep from '../final';
 import useWindowDimensions from '../../../utils/layout';
-import { AuctionState } from '../../auctionCreate';
+import { CreatePackSteps, PackState } from './types';
+import { STEPS_TITLES } from './data';
 
 const { Step } = Steps;
 
-interface PackState extends AuctionState {
-  vouchersItems: [];
-  cardsItems: [];
-  vouchersCount: [];
-  cardsCount: [];
-  actionOnProve: string;
-  distribution: string;
-}
-
 function CreatePackStepper() {
-  const [stepsVisible, setStepsVisible] = useState<boolean>(true);
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<CreatePackSteps>(CreatePackSteps.CreatePack);
   const { width } = useWindowDimensions();
   const history = useHistory();
   const { step_param }: { step_param: string } = useParams();
@@ -44,57 +35,24 @@ function CreatePackStepper() {
 
   useEffect(() => {
     if (step_param) setStep(parseInt(step_param));
-    else gotoNextStep(0);
+    else goToNextStep(CreatePackSteps.CreatePack);
   }, [step_param]);
 
-  const gotoNextStep = (_step?: number) => {
-    const nextStep = _step === undefined ? step + 1 : _step;
-    history.push(`/admin/pack/create/${nextStep.toString()}`);
+  const goToNextStep = (nextStep?: CreatePackSteps) => {
+    const historyNextStep = nextStep === undefined ? step + 1 : nextStep;
+    history.push(`/admin/pack/create/${historyNextStep.toString()}`);
   };
 
   const renderBackButton = () => (
     <div style={{ margin: 'auto', width: 'fit-content' }}>
-      <Button onClick={() => gotoNextStep(step - 1)} style={{ height: 50 }}>
+      <Button
+        onClick={() => goToNextStep(step - 1)}
+        style={{ height: 50 }}
+      >
         Back
       </Button>
     </div>
   );
-
-  const createPackStep = <CreatePack confirm={gotoNextStep} />;
-
-  const addVoucherStep = (
-    <AddVoucher
-      attributes={attributes}
-      setAttributes={setAttributes}
-      confirm={gotoNextStep}
-      backButton={renderBackButton()}
-    />
-  );
-
-  const addCardStep = (
-    <AddCard
-      attributes={attributes}
-      setAttributes={setAttributes}
-      confirm={gotoNextStep}
-      backButton={renderBackButton()}
-      distribution={attributes.distribution}
-    />
-  );
-
-  const finalStep = (
-    <FinalStep
-      attributes={attributes}
-      confirm={gotoNextStep}
-      backButton={renderBackButton()}
-    />
-  );
-
-  const steps = [
-    ['Create Pack', createPackStep],
-    ['Add Voucher', addVoucherStep],
-    ['Add Card', addCardStep],
-    ['Final', finalStep],
-  ];
 
   return (
     <>
@@ -124,29 +82,56 @@ function CreatePackStepper() {
       </Row>
 
       <Row style={{ paddingTop: 50 }}>
-        {stepsVisible && (
-          <Col span={24} md={4}>
-            <Steps
-              progressDot
-              direction={width < 768 ? 'horizontal' : 'vertical'}
-              current={step}
-              style={{
-                width: 'fit-content',
-                margin: '0 auto 30px auto',
-                overflowX: 'auto',
-                maxWidth: '100%',
-              }}
-            >
-              {steps
-                .filter(step => !!step[0])
-                .map((step, idx) => (
-                  <Step title={step[0]} key={idx} />
-                ))}
-            </Steps>
-          </Col>
-        )}
-        <Col span={24} {...(stepsVisible ? { md: 20 } : { md: 24 })}>
-          {steps[step][1]}
+        <Col span={24} md={4}>
+          <Steps
+            progressDot
+            direction={width < 768 ? 'horizontal' : 'vertical'}
+            current={step}
+            style={{
+              width: 'fit-content',
+              margin: '0 auto 30px auto',
+              overflowX: 'auto',
+              maxWidth: '100%',
+            }}
+          >
+            {Object.entries(STEPS_TITLES).map(([step, title]) => (
+              <Step title={title} key={step} />
+            ))}
+          </Steps>
+        </Col>
+        <Col span={24} md={20}>
+          {step === CreatePackSteps.CreatePack && (
+            <CreatePack
+              confirm={goToNextStep}
+            />
+          )}
+
+          {step === CreatePackSteps.AddVoucher && (
+            <AddVoucher
+              attributes={attributes}
+              setAttributes={setAttributes}
+              confirm={goToNextStep}
+              backButton={renderBackButton()}
+            />
+          )}
+
+          {step === CreatePackSteps.AddCard && (
+            <AddCard
+              attributes={attributes}
+              setAttributes={setAttributes}
+              confirm={goToNextStep}
+              backButton={renderBackButton()}
+              distribution={attributes.distribution}
+            />
+          )}
+
+          {step === CreatePackSteps.Final && (
+            <FinalStep
+              attributes={attributes}
+              confirm={goToNextStep}
+              backButton={renderBackButton()}
+            />
+          )}
         </Col>
       </Row>
     </>

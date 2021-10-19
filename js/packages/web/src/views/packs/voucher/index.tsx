@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Form, Button, Space } from 'antd';
 import { Creator } from '@oyster/common';
 
-import { ArtSelector } from '../../auctionCreate/artSelector';
-import { SafetyDepositDraft } from '../../../actions/createAuctionManager';
+import { ArtSelector } from "../../auctionCreate/artSelector";
+import { SafetyDepositDraft } from "../../../actions/createAuctionManager";
+import { CreatePackSteps } from '../createPackStepper/types';
 
 const AddVoucher = ({ attributes, setAttributes, confirm, backButton }) => {
   const onSubmit = (values: any) => {
     console.log('Success:', values);
-    confirm(2);
+    confirm(CreatePackSteps.AddCard)
   };
 
   const onSubmitFailed = (errorInfo: any) => {
