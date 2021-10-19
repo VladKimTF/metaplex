@@ -1,18 +1,14 @@
-import React, { ReactElement } from 'react';
+import React, { memo, ReactElement } from 'react';
 import { Form, Input, Button, Select, Switch, DatePicker } from 'antd';
 
-import { CreatePackSteps, PackState } from '../createPackStepper/types';
-import { CreatePackFormValues } from './interface';
+import { CreatePackSteps } from '../../types';
+import { CreatePackFormValues } from '../../interface';
+import { CreatePackProps } from './interface';
 
 const { Option } = Select;
 const valueU32 = 4294967295;
 
-interface CreatePackProps {
-  confirm: (step?: CreatePackSteps) => void;
-  setPackState: (values: Partial<PackState>) => void;
-}
-
-const CreatePack = ({ setPackState, confirm }: CreatePackProps): ReactElement => {
+const CreatePackStep = ({ setPackState, confirm }: CreatePackProps): ReactElement => {
   const onSubmit = (formValues: CreatePackFormValues) => {
     setPackState({ formValues });
     confirm(CreatePackSteps.AddVoucher);
@@ -92,4 +88,4 @@ const CreatePack = ({ setPackState, confirm }: CreatePackProps): ReactElement =>
   );
 };
 
-export default CreatePack;
+export default memo(CreatePackStep);

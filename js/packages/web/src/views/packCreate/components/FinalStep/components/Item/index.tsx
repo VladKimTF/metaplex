@@ -1,21 +1,11 @@
-import React, { memo, ReactElement } from "react";
-import { Typography } from "antd";
+import React, { memo, ReactElement } from 'react';
+import { Typography } from 'antd';
+import { ArtContent } from '../../../../../../components/ArtContent';
 
-import { ArtContent } from "../../../components/ArtContent";
-import { SafetyDepositDraft } from "../../../actions/createAuctionManager";
+import { ItemProps } from './interface';
+import { ItemType } from './types';
 
 const { Text, Title } = Typography;
-
-export enum ItemType {
-  Voucher,
-  Card
-}
-
-interface ItemProps {
-  item: SafetyDepositDraft
-  type: ItemType,
-  cardsCount: Record<number, Record<number, string>>[]
-}
 
 const Item = ({ item, type, cardsCount }: ItemProps): ReactElement => {
   const id = item.metadata.pubkey;

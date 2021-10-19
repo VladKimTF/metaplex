@@ -1,20 +1,13 @@
-import React, { ReactElement } from 'react';
+import React, { memo, ReactElement } from 'react';
 import { Form, Button, Space } from 'antd';
 import { Creator } from '@oyster/common';
 
-import { ArtSelector } from "../../auctionCreate/artSelector";
-import { SafetyDepositDraft } from "../../../actions/createAuctionManager";
-import { CreatePackSteps, PackState } from '../createPackStepper/types';
+import { ArtSelector } from "../../../auctionCreate/artSelector";
+import { SafetyDepositDraft } from '../../../../actions/createAuctionManager';
+import { CreatePackSteps } from '../../types';
+import { AddVoucherStepProps } from './interface';
 
-interface AddVoucherProps {
-  confirm: (step?: CreatePackSteps) => void;
-  setPackState: (values: Partial<PackState>) => void;
-  vouchersItems: SafetyDepositDraft[];
-  vouchersCount: number[];
-  backButton: ReactElement
-}
-
-const AddVoucher = ({ setPackState, confirm, vouchersItems, vouchersCount, backButton }: AddVoucherProps): ReactElement  => {
+const AddVoucherStep = ({ setPackState, confirm, vouchersItems, vouchersCount, backButton }: AddVoucherStepProps): ReactElement  => {
   const onSubmit = (values: any) => {
     console.log('Success:', values);
     confirm(CreatePackSteps.AddCard)
@@ -64,4 +57,4 @@ const AddVoucher = ({ setPackState, confirm, vouchersItems, vouchersCount, backB
   );
 };
 
-export default AddVoucher;
+export default memo(AddVoucherStep);

@@ -15,7 +15,7 @@ import {
 } from './views';
 import { AdminView } from './views/admin';
 import AdminPacksView from './views/packs';
-import CreatePackStepper from './views/packs/createPackStepper';
+import PackCreateView from './views/packCreate';
 import { BillingView } from './views/auction/billing';
 
 export function Routes() {
@@ -33,7 +33,7 @@ export function Routes() {
             <Route
               exact
               path="/admin/pack/create/:step_param?"
-              component={() => <CreatePackStepper />}
+              component={() => <PackCreateView />}
             />
             <Route
               exact

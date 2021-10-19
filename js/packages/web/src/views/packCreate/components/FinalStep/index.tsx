@@ -1,15 +1,11 @@
 import React, { memo, ReactElement } from 'react';
 import { Button, Typography } from 'antd';
 
-import Item, { ItemType } from './item';
-import { PackState } from '../createPackStepper/types';
+import Item from './components/Item';
+import { ItemType } from './components/Item/types';
+import { FinalStepProps } from './interface';
 
 const { Title } = Typography;
-
-interface FinalStepProps {
-  attributes: PackState;
-  backButton: ReactElement
-}
 
 const FinalStep = ({ attributes: { vouchersItems, formValues, cardsItems, cardsCount }, backButton }: FinalStepProps): ReactElement => {
   const voucher = vouchersItems[0];

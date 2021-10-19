@@ -1,34 +1,26 @@
-import React, { ReactElement, useMemo } from 'react';
-import { Form, Input, Button, Space, Row, Col, Checkbox } from 'antd';
-import { ArtSelector } from '../../auctionCreate/artSelector';
-import { SafetyDepositDraft } from '../../../actions/createAuctionManager';
-import { Creator } from '@oyster/common';
+import React, { memo, ReactElement, useMemo } from 'react';
 import Masonry from 'react-masonry-css';
-import { ArtContent } from '../../../components/ArtContent';
-import { CreatePackSteps, PackState } from '../createPackStepper/types';
+import { Form, Input, Button, Space, Row, Col, Checkbox } from 'antd';
+import { Creator } from '@oyster/common';
+
+import { SafetyDepositDraft } from '../../../../actions/createAuctionManager';
+import { ArtSelector } from '../../../auctionCreate/artSelector';
+import { ArtContent } from '../../../../components/ArtContent';
+import { CreatePackSteps } from '../../types';
+import { AddCardStepProps } from './interface';
 
 const breakpointColumnsListObj = {
   default: 1,
 };
 
-interface AddCardProps {
-  confirm: (step?: CreatePackSteps) => void;
-  setPackState: (values: Partial<PackState>) => void;
-  cardsItems: SafetyDepositDraft[];
-  cardsCount: Record<number, Record<number, string>>[];
-  backButton: ReactElement;
-  distribution: string;
-}
-
-
-function AddCard({
+const AddCardStep = ({
   confirm,
   setPackState,
   cardsItems,
   cardsCount,
   backButton,
   distribution,
-}: AddCardProps) {
+}: AddCardStepProps): ReactElement => {
   const onSubmit = (values: any) => {
     console.log('Success:', values);
     confirm(CreatePackSteps.Final);
@@ -243,4 +235,4 @@ function AddCard({
   );
 }
 
-export default AddCard;
+export default memo(AddCardStep);

@@ -1,18 +1,21 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Button, Row, Col, Steps, Typography } from 'antd';
 import { useHistory, useParams } from 'react-router-dom';
 
-import CreatePack from '../createPack';
-import AddVoucher from '../voucher';
-import AddCard from '../card';
-import FinalStep from '../final';
-import useWindowDimensions from '../../../utils/layout';
-import { CreatePackSteps, PackState } from './types';
+import useWindowDimensions from '../../utils/layout';
+
+import { PackState } from './interface';
 import { INITIAL_PACK_STATE, STEPS_TITLES } from './data';
+import { CreatePackSteps } from './types';
+
+import CreatePackStep from './components/CreatePackStep';
+import AddVoucherStep from './components/AddVoucherStep';
+import AddCardStep from './components/AddCardStep';
+import FinalStep from './components/FinalStep';
 
 const { Step } = Steps;
 
-function CreatePackStepper() {
+const PackCreateView = (): ReactElement => {
   const [step, setStep] = useState<CreatePackSteps>(CreatePackSteps.CreatePack);
   const { width } = useWindowDimensions();
   const history = useHistory();
@@ -95,14 +98,14 @@ function CreatePackStepper() {
         </Col>
         <Col span={24} md={20}>
           {step === CreatePackSteps.CreatePack && (
-            <CreatePack
+            <CreatePackStep
               setPackState={setPackState}
               confirm={goToNextStep}
             />
           )}
 
           {step === CreatePackSteps.AddVoucher && (
-            <AddVoucher
+            <AddVoucherStep
               vouchersItems={attributes.vouchersItems}
               vouchersCount={attributes.vouchersCount}
               setPackState={setPackState}
@@ -112,7 +115,7 @@ function CreatePackStepper() {
           )}
 
           {step === CreatePackSteps.AddCard && (
-            <AddCard
+            <AddCardStep
               cardsItems={attributes.cardsItems}
               cardsCount={attributes.cardsCount}
               setPackState={setPackState}
@@ -134,4 +137,4 @@ function CreatePackStepper() {
   );
 }
 
-export default CreatePackStepper;
+export default PackCreateView;
