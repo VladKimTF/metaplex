@@ -26,7 +26,12 @@ import {
   DEPRECATED_SCHEMA,
   ParticipationConfigV1,
 } from './deprecatedStates';
-import { AddCardToPackParams, InitPackSetParams } from './packs/interface';
+import {
+  ActionOnProve,
+  AddCardToPackParams,
+  AddVoucherToPackParams,
+  InitPackSetParams,
+} from './packs/interface';
 
 export * from './deprecatedInitAuctionManagerV1';
 export * from './redeemBid';
@@ -762,6 +767,23 @@ export class AddCardToPackArgs {
   }
 }
 
+export class AddVoucherToPackArgs {
+  instruction = 2;
+  numberToOpen: BN;
+  actionOnProve: ActionOnProve;
+
+  constructor(args: AddVoucherToPackParams) {
+    this.numberToOpen = args.numberToOpen;
+    this.actionOnProve = args.actionOnProve;
+  }
+}
+
+export class ActivatePackArgs {
+  instruction = 3;
+
+  constructor() {}
+}
+
 export class SafetyDepositConfig {
   key: MetaplexKey = MetaplexKey.SafetyDepositConfigV1;
   auctionManager: StringPublicKey = SystemProgram.programId.toBase58();
@@ -964,6 +986,17 @@ export const SCHEMA = new Map<any, any>([
         ['maxSupply', { kind: 'option', type: 'u32' }],
         ['probability', { kind: 'option', type: 'u32' }],
         ['index', 'u32'],
+      ],
+    },
+  ],
+  [ActivatePackArgs, {}],
+  [
+    AddVoucherToPackArgs,
+    {
+      kind: 'struct',
+      fields: [
+        ['numberToOpen', 'u32'],
+        ['actionOnProve', 'u8'],
       ],
     },
   ],

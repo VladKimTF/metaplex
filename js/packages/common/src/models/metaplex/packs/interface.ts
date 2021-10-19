@@ -16,3 +16,13 @@ export interface AddCardToPackParams {
   probability: BN | null;
   index: BN;
 }
+
+export enum ActionOnProve {
+  Burn,
+  Redeem,
+}
+
+export interface AddVoucherToPackParams {
+  numberToOpen: BN;
+  actionOnProve: ActionOnProve;
+}
