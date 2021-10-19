@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Row, Col, Steps, Typography } from 'antd';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ import AddCard from '../card';
 import FinalStep from '../final';
 import useWindowDimensions from '../../../utils/layout';
 import { CreatePackSteps, PackState } from './types';
-import { STEPS_TITLES } from './data';
+import { INITIAL_PACK_STATE, STEPS_TITLES } from './data';
 
 const { Step } = Steps;
 
@@ -16,33 +16,26 @@ function CreatePackStepper() {
   const [step, setStep] = useState<CreatePackSteps>(CreatePackSteps.CreatePack);
   const { width } = useWindowDimensions();
   const history = useHistory();
-  const { step_param }: { step_param: string } = useParams();
+  const { step_param: stepParam }: { step_param: string } = useParams();
 
-  const [attributes, setAttributes] = useState<PackState>({
-    category: 3,
-    reservationPrice: 0,
-    items: [],
-    cardsItems: [],
-    vouchersItems: [],
-    vouchersCount: [],
-    cardsCount: [],
-    initPackValues: {},
-    auctionDurationType: 'minutes',
-    gapTimeType: 'minutes',
-    winnersCount: 1,
-    actionOnProve: 'Burn',
-    distribution: 'fixed',
-  });
+  const [attributes, setAttributes] = useState<PackState>(INITIAL_PACK_STATE);
 
   useEffect(() => {
-    if (step_param) setStep(parseInt(step_param));
-    else goToNextStep(CreatePackSteps.CreatePack);
-  }, [step_param]);
+    if (stepParam) {
+      return setStep(parseInt(stepParam));
+    }
+
+    goToNextStep(CreatePackSteps.CreatePack);
+  }, [stepParam]);
 
   const goToNextStep = (nextStep?: CreatePackSteps) => {
     const historyNextStep = nextStep === undefined ? step + 1 : nextStep;
     history.push(`/admin/pack/create/${historyNextStep.toString()}`);
   };
+
+  const setPackState = useCallback((value: Partial<PackState>) => {
+    setAttributes({ ...attributes, ...value });
+  }, [attributes])
 
   const renderBackButton = () => (
     <div style={{ margin: 'auto', width: 'fit-content' }}>
@@ -103,16 +96,16 @@ function CreatePackStepper() {
         <Col span={24} md={20}>
           {step === CreatePackSteps.CreatePack && (
             <CreatePack
-              attributes={attributes}
-              setAttributes={setAttributes}
+              setPackState={setPackState}
               confirm={goToNextStep}
             />
           )}
 
           {step === CreatePackSteps.AddVoucher && (
             <AddVoucher
-              attributes={attributes}
-              setAttributes={setAttributes}
+              vouchersItems={attributes.vouchersItems}
+              vouchersCount={attributes.vouchersCount}
+              setPackState={setPackState}
               confirm={goToNextStep}
               backButton={renderBackButton()}
             />
@@ -120,8 +113,9 @@ function CreatePackStepper() {
 
           {step === CreatePackSteps.AddCard && (
             <AddCard
-              attributes={attributes}
-              setAttributes={setAttributes}
+              cardsItems={attributes.cardsItems}
+              cardsCount={attributes.cardsCount}
+              setPackState={setPackState}
               confirm={goToNextStep}
               backButton={renderBackButton()}
               distribution={attributes.distribution}

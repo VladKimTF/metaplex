@@ -1,55 +1,57 @@
-import React from 'react';
+import React, { memo, ReactElement } from 'react';
 import { Button, Typography } from 'antd';
 
-import Item from './item';
+import Item, { ItemType } from './item';
+import { PackState } from '../createPackStepper/types';
 
 const { Title } = Typography;
 
-function FinalStep({ attributes, backButton }) {
-  const voucher = attributes.vouchersItems[0];
-  const packValues = attributes.initPackValues;
+interface FinalStepProps {
+  attributes: PackState;
+  backButton: ReactElement
+}
+
+const FinalStep = ({ attributes: { vouchersItems, formValues, cardsItems, cardsCount }, backButton }: FinalStepProps): ReactElement => {
+  const voucher = vouchersItems[0];
+  const { name, distributionType, uri, allowedAmountToRedeem, redeemStartDate, redeemEndDate, mutable } = formValues || {};
 
   return (
     <div className="form-box">
       <div>
         <Title level={3}>Pack: </Title>
-        {
-          packValues && (
-            <div className="pack-wrapper">
-              <div className="pack-values">
-                <Title level={5}>
-                  Name: {packValues.name}
-                </Title>
-                <Title level={5}>
-                  Distribution Type: {packValues.distributionType}
-                </Title>
-                <Title level={5}>
-                  Poster URL: {packValues.uri}
-                </Title>
-                <Title level={5}>
-                  Allowed Amount To Redeem: {packValues.allowedAmountToRedeem}
-                </Title>
-                <Title level={5}>
-                  Redeem Start Date: {packValues.redeemStartDate || 'Unselected'}
-                </Title>
-                <Title level={5}>
-                  Redeem End Date: {packValues.redeemEndDate  || 'Unselected'}
-                </Title>
-                <Title level={5}>
-                  Mutable: {packValues.mutable ? 'yes' : 'no'}
-                </Title>
-              </div>
+        {formValues && (
+          <div className="pack-wrapper">
+            <div className="pack-values">
+              <Title level={5}>
+                Name: {name}
+              </Title>
+              <Title level={5}>
+                Distribution Type: {distributionType}
+              </Title>
+              <Title level={5}>
+                Poster URL: {uri}
+              </Title>
+              <Title level={5}>
+                Allowed Amount To Redeem: {allowedAmountToRedeem}
+              </Title>
+              <Title level={5}>
+                Redeem Start Date: {redeemStartDate || 'Unselected'}
+              </Title>
+              <Title level={5}>
+                Redeem End Date: {redeemEndDate  || 'Unselected'}
+              </Title>
+              <Title level={5}>
+                Mutable: {mutable ? 'yes' : 'no'}
+              </Title>
             </div>
-          )
-        }
+          </div>
+        )}
 
         <Title level={3}>Voucher: </Title>
-        {
-          voucher && Item(voucher, 'voucher', attributes)
-        }
+        {voucher && <Item item={voucher} type={ItemType.Voucher} cardsCount={cardsCount} />}
 
         <Title level={3}>Cards: </Title>
-        {attributes.cardsItems?.map((card) => Item(card, 'card', attributes))}
+        {cardsItems?.map((card) => <Item key={card.metadata.pubkey} item={card} type={ItemType.Card} cardsCount={cardsCount} />)}
       </div>
       <div style={{ display: "flex" }}>
         <Button type="primary" htmlType="submit">
@@ -61,4 +63,4 @@ function FinalStep({ attributes, backButton }) {
   );
 }
 
-export default FinalStep;
+export default memo(FinalStep);

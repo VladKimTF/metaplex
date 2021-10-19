@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { ReactElement } from 'react';
 import { Form, Button, Space } from 'antd';
 import { Creator } from '@oyster/common';
 
 import { ArtSelector } from "../../auctionCreate/artSelector";
 import { SafetyDepositDraft } from "../../../actions/createAuctionManager";
-import { CreatePackSteps } from '../createPackStepper/types';
+import { CreatePackSteps, PackState } from '../createPackStepper/types';
 
-const AddVoucher = ({ attributes, setAttributes, confirm, backButton }) => {
+interface AddVoucherProps {
+  confirm: (step?: CreatePackSteps) => void;
+  setPackState: (values: Partial<PackState>) => void;
+  vouchersItems: SafetyDepositDraft[];
+  vouchersCount: number[];
+  backButton: ReactElement
+}
+
+const AddVoucher = ({ setPackState, confirm, vouchersItems, vouchersCount, backButton }: AddVoucherProps): ReactElement  => {
   const onSubmit = (values: any) => {
     console.log('Success:', values);
     confirm(CreatePackSteps.AddCard)
@@ -33,11 +41,11 @@ const AddVoucher = ({ attributes, setAttributes, confirm, backButton }) => {
           title="Select the NFT that you want add to Pack"
           description="Select the NFT that you want to add"
           filter={artistFilter}
-          selected={attributes.vouchersItems}
+          selected={vouchersItems}
           setSelected={vouchersItems => {
-            setAttributes({ ...attributes, vouchersItems });
+            setPackState({ vouchersItems });
           }}
-          selectedCount={id => attributes.vouchersCount[id]}
+          selectedCount={id => vouchersCount[id]}
           allowMultiple={false}
         >
           Select NFT

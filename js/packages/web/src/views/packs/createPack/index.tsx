@@ -1,10 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Form, Input, Button, Select, Switch, DatePicker } from 'antd';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { sendTransactionWithRetry, useConnection } from '@oyster/common';
 
 import { CreatePackSteps, PackState } from '../createPackStepper/types';
-import { getCreatePackInstructions } from './utils/getCreatePackInstructions';
 import { CreatePackFormValues } from './interface';
 
 const { Option } = Select;
@@ -12,39 +9,13 @@ const valueU32 = 4294967295;
 
 interface CreatePackProps {
   confirm: (step?: CreatePackSteps) => void;
-  setAttributes: (values) => void;
-  attributes: PackState;
+  setPackState: (values: Partial<PackState>) => void;
 }
 
-const CreatePack = ({ attributes, setAttributes, confirm }: CreatePackProps): ReactElement => {
-  const wallet = useWallet();
-  const connection = useConnection();
-
-  const onSubmit = async (values: CreatePackFormValues) => {
-    try {
-      setAttributes({ ...attributes, initPackValues: values });
-      const { instructions, signers } = await getCreatePackInstructions({ values, wallet, connection })
-
-      await sendTransactionWithRetry(
-        connection,
-        wallet,
-        instructions,
-        signers,
-        'single',
-      )
-
-      confirm(CreatePackSteps.AddVoucher);
-    } catch (e) {
-      console.log('Error while submitting Create Pack transaction', e);
-    }
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
-
-  const onMutableChange = (value: any) => {
-    console.log('onMutableChange:', value);
+const CreatePack = ({ setPackState, confirm }: CreatePackProps): ReactElement => {
+  const onSubmit = (formValues: CreatePackFormValues) => {
+    setPackState({ formValues });
+    confirm(CreatePackSteps.AddVoucher);
   };
 
   return (
@@ -53,7 +24,6 @@ const CreatePack = ({ attributes, setAttributes, confirm }: CreatePackProps): Re
         name="createPack"
         initialValues={{ remember: true }}
         onFinish={onSubmit}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
         layout="vertical"
       >
@@ -73,7 +43,6 @@ const CreatePack = ({ attributes, setAttributes, confirm }: CreatePackProps): Re
           <Select
             className="select"
             placeholder="Select a option and change input text above"
-            onChange={onMutableChange}
             bordered={false}
             allowClear
           >

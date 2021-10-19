@@ -1,25 +1,34 @@
-import React, { useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { Form, Input, Button, Space, Row, Col, Checkbox } from 'antd';
 import { ArtSelector } from '../../auctionCreate/artSelector';
 import { SafetyDepositDraft } from '../../../actions/createAuctionManager';
 import { Creator } from '@oyster/common';
 import Masonry from 'react-masonry-css';
-import { useArt } from '../../../hooks';
-import { MetaAvatar } from '../../../components/MetaAvatar';
 import { ArtContent } from '../../../components/ArtContent';
-import { CreatePackSteps } from '../createPackStepper/types';
+import { CreatePackSteps, PackState } from '../createPackStepper/types';
 
 const breakpointColumnsListObj = {
   default: 1,
 };
 
+interface AddCardProps {
+  confirm: (step?: CreatePackSteps) => void;
+  setPackState: (values: Partial<PackState>) => void;
+  cardsItems: SafetyDepositDraft[];
+  cardsCount: Record<number, Record<number, string>>[];
+  backButton: ReactElement;
+  distribution: string;
+}
+
+
 function AddCard({
-  attributes,
-  setAttributes,
   confirm,
+  setPackState,
+  cardsItems,
+  cardsCount,
   backButton,
   distribution,
-}) {
+}: AddCardProps) {
   const onSubmit = (values: any) => {
     console.log('Success:', values);
     confirm(CreatePackSteps.Final);
@@ -31,7 +40,7 @@ function AddCard({
 
   const handleCardsCountUpdate = (e, id, targetName: string) => {
     const { value } = e.target;
-    const cards = attributes.cardsCount;
+    const cards = cardsCount;
     const hasCard = cards.find(card => card[id]);
 
     if (cards.length && hasCard) {
@@ -49,20 +58,20 @@ function AddCard({
       });
     }
 
-    setAttributes({ ...attributes, cardsCount: cards });
+    setPackState({ cardsCount: cards });
   };
 
   const artistFilter = (i: SafetyDepositDraft) =>
     !(i.metadata.info.data.creators || []).find((c: Creator) => !c.verified);
 
-  const selected = attributes.cardsItems;
+  const selected = cardsItems;
   const selectedItems = useMemo<Set<string>>(
     () => new Set(selected.map(item => item.metadata.pubkey)),
     [selected],
   );
 
   const handleSelected = cardsItems => {
-    setAttributes({ ...attributes, cardsItems });
+    setPackState({ cardsItems });
   };
 
   const renderList = items => (
@@ -102,13 +111,13 @@ function AddCard({
           const isSelected = selectedItems.has(id);
 
           const onSelect = () => {
-            let list = [...selectedItems.keys()];
+            const list = [...selectedItems.keys()];
 
             const newSet = isSelected
               ? new Set(list.filter(item => item !== id))
               : new Set([...list, id]);
 
-            let selected = items.filter(item =>
+            const selected = items.filter(item =>
               newSet.has(item.metadata.pubkey),
             );
 
@@ -210,11 +219,11 @@ function AddCard({
           title="Select the NFT that you want add to Pack"
           description="Select the NFT that you want to add"
           filter={artistFilter}
-          selected={attributes.cardsItems}
+          selected={cardsItems}
           setSelected={cardsItems => {
-            setAttributes({ ...attributes, cardsItems });
+            setPackState({ cardsItems });
           }}
-          selectedCount={id => attributes.cardsCount[id]}
+          selectedCount={id => cardsCount[id]}
           allowMultiple
           renderList={renderList}
         >
