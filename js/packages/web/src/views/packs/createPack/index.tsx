@@ -1,16 +1,11 @@
 import React, { ReactElement } from 'react';
 import { Form, Input, Button, Select, Switch, DatePicker } from 'antd';
-import { initPackSet } from '@oyster/common/dist/lib/models/metaplex/initPackSet';
 import { useWallet } from '@solana/wallet-adapter-react';
-import {
-  Keypair,
-  SystemProgram,
-  TransactionInstruction,
-} from '@solana/web3.js';
 import { sendTransactionWithRetry, useConnection } from '@oyster/common';
 
-import { PACK_CREATE_ID } from '../../../utils/ids';
 import { CreatePackSteps } from '../createPackStepper/types';
+import { getCreatePackInstructions } from './utils/getCreatePackInstructions';
+import { CreatePackFormValues } from './interface';
 
 const { Option } = Select;
 const valueU32 = 4294967295;
@@ -23,71 +18,23 @@ const CreatePack = ({ confirm }: CreatePackProps): ReactElement => {
   const wallet = useWallet();
   const connection = useConnection();
 
-  const onSubmit = (values: any) => {
-    setupInitPackInstructions(values).then(({ instructions, signers }) => {
-      sendTransactionWithRetry(
+  const onSubmit = async (values: CreatePackFormValues) => {
+    try {
+      const { instructions, signers } = await getCreatePackInstructions({ values, wallet, connection })
+
+      await sendTransactionWithRetry(
         connection,
         wallet,
         instructions,
         signers,
         'single',
-      ).then(res => {
-        console.log('setupInitPackInstructions:', res);
-        confirm(CreatePackSteps.AddVoucher);
-      });
-    });
+      )
+
+      confirm(CreatePackSteps.AddVoucher);
+    } catch (e) {
+      console.log('Error while submitting Create Pack transaction', e);
+    }
   };
-
-  async function setupInitPackInstructions(values): Promise<{
-    instructions: TransactionInstruction[];
-    signers: any;
-  }> {
-    const {
-      name,
-      mutable,
-      uri,
-      distribution_type,
-      allowed_amount_to_redeem,
-      redeem_start_date,
-      redeem_end_date,
-    } = values;
-
-    const packSet = Keypair.generate();
-    const packSetRentExempt =
-      await connection.getMinimumBalanceForRentExemption(338);
-    const instructions: TransactionInstruction[] = [];
-    if (wallet?.publicKey) {
-      instructions.push(
-        SystemProgram.createAccount({
-          fromPubkey: wallet?.publicKey,
-          newAccountPubkey: packSet.publicKey,
-          lamports: packSetRentExempt,
-          space: 338,
-          programId: PACK_CREATE_ID,
-        }),
-      );
-    }
-
-    const nameArray = Array.from(String(name), Number);
-    const nameUint32 = new Uint32Array(nameArray);
-
-    if (packSet.publicKey && wallet.publicKey) {
-      await initPackSet(
-        instructions,
-        nameUint32,
-        uri || 'test uri',
-        mutable || false,
-        distribution_type,
-        allowed_amount_to_redeem || 1,
-        redeem_start_date || null,
-        redeem_end_date || null,
-        packSet.publicKey,
-        wallet.publicKey.toBase58(),
-      );
-    }
-
-    return { instructions, signers: [packSet] };
-  }
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
@@ -112,11 +59,11 @@ const CreatePack = ({ confirm }: CreatePackProps): ReactElement => {
           name="name"
           rules={[{ required: true, message: 'Please input pack name' }]}
         >
-          <Input type={'number'} min={1} />
+          <Input />
         </Form.Item>
 
         <Form.Item
-          name="distribution_type"
+          name="distributionType"
           label="Distribution type"
           rules={[{ required: true }]}
         >
@@ -134,7 +81,7 @@ const CreatePack = ({ confirm }: CreatePackProps): ReactElement => {
 
         <Form.Item
           label="Allowed amount to redeem"
-          name="allowed_amount_to_redeem"
+          name="allowedAmountToRedeem"
           rules={[
             {
               required: true,
@@ -145,14 +92,18 @@ const CreatePack = ({ confirm }: CreatePackProps): ReactElement => {
           <Input type={'number'} min={1} max={valueU32} />
         </Form.Item>
 
-        <Form.Item label="Poster URL" name="uri">
+        <Form.Item
+          label="Poster URL"
+          name="uri"
+          rules={[{ required: true, message: 'Please enter Poster URL' }]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item label="Redeem start date" name="redeem_start_date">
+        <Form.Item label="Redeem start date" name="redeemStartDate">
           <DatePicker className="date-picker" style={{ width: '100%' }} />
         </Form.Item>
-        <Form.Item label="Redeem end date" name="redeem_end_date">
+        <Form.Item label="Redeem end date" name="redeemEndDate">
           <DatePicker className="date-picker" style={{ width: '100%' }} />
         </Form.Item>
         <Form.Item label="Mutable" name="mutable" valuePropName="mutable">
@@ -167,6 +118,6 @@ const CreatePack = ({ confirm }: CreatePackProps): ReactElement => {
       </Form>
     </div>
   );
-}
+};
 
 export default CreatePack;

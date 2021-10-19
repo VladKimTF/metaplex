@@ -26,6 +26,7 @@ import {
   DEPRECATED_SCHEMA,
   ParticipationConfigV1,
 } from './deprecatedStates';
+import { AddCardToPackParams, InitPackSetParams } from './packs/interface';
 
 export * from './deprecatedInitAuctionManagerV1';
 export * from './redeemBid';
@@ -732,27 +733,32 @@ export class InitPackSetArgs {
   name: Uint32Array;
   uri: string;
   mutable: boolean;
-  distribution_type: PackDistributionType;
-  allowed_amount_to_redeem: BN;
-  redeem_start_date: BN | null;
-  redeem_end_date: BN | null;
+  distributionType: PackDistributionType;
+  allowedAmountToRedeem: BN;
+  redeemStartDate: BN | null;
+  redeemEndDate: BN | null;
 
-  constructor(args: {
-    name: Uint32Array;
-    uri: string;
-    mutable: boolean;
-    distribution_type: PackDistributionType;
-    allowed_amount_to_redeem: BN;
-    redeem_start_date: BN | null;
-    redeem_end_date: BN | null;
-  }) {
+  constructor(args: InitPackSetParams) {
     this.name = args.name;
     this.uri = args.uri;
     this.mutable = args.mutable;
-    this.distribution_type = args.distribution_type;
-    this.allowed_amount_to_redeem = args.allowed_amount_to_redeem;
-    this.redeem_start_date = args.redeem_start_date;
-    this.redeem_end_date = args.redeem_end_date;
+    this.distributionType = args.distributionType;
+    this.allowedAmountToRedeem = args.allowedAmountToRedeem;
+    this.redeemStartDate = args.redeemStartDate;
+    this.redeemEndDate = args.redeemEndDate;
+  }
+}
+
+export class AddCardToPackArgs {
+  instruction = 1;
+  maxSupply: BN | null;
+  probability: BN | null;
+  index: BN;
+
+  constructor(args: AddCardToPackParams) {
+    this.maxSupply = args.maxSupply;
+    this.probability = args.probability;
+    this.index = args.index;
   }
 }
 
@@ -943,10 +949,21 @@ export const SCHEMA = new Map<any, any>([
         ['name', [32]],
         ['uri', 'string'],
         ['mutable', 'u8'], //bool
-        ['distribution_type', 'u8'],
-        ['allowed_amount_to_redeem', 'u32'],
-        ['redeem_start_date', { kind: 'option', type: 'u64' }],
-        ['redeem_end_date', { kind: 'option', type: 'u64' }],
+        ['distributionType', 'u8'],
+        ['allowedAmountToRedeem', 'u32'],
+        ['redeemStartDate', { kind: 'option', type: 'u64' }],
+        ['redeemEndDate', { kind: 'option', type: 'u64' }],
+      ],
+    },
+  ],
+  [
+    AddCardToPackArgs,
+    {
+      kind: 'struct',
+      fields: [
+        ['maxSupply', { kind: 'option', type: 'u32' }],
+        ['probability', { kind: 'option', type: 'u32' }],
+        ['index', 'u32'],
       ],
     },
   ],
