@@ -1,3 +1,4 @@
+import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import { Providers } from './providers';
 import {
@@ -13,7 +14,7 @@ import {
   StaticPageView,
 } from './views';
 import { AdminView } from './views/admin';
-import { AdminPacksView } from './views/packs';
+import AdminPacksView from './views/packs';
 import CreatePackStepper from './views/packs/createPackStepper';
 import { BillingView } from './views/auction/billing';
 
