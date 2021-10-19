@@ -26,6 +26,7 @@ function CreatePackStepper() {
     vouchersItems: [],
     vouchersCount: [],
     cardsCount: [],
+    initPackValues: {},
     auctionDurationType: 'minutes',
     gapTimeType: 'minutes',
     winnersCount: 1,
@@ -102,6 +103,8 @@ function CreatePackStepper() {
         <Col span={24} md={20}>
           {step === CreatePackSteps.CreatePack && (
             <CreatePack
+              attributes={attributes}
+              setAttributes={setAttributes}
               confirm={goToNextStep}
             />
           )}
@@ -128,7 +131,6 @@ function CreatePackStepper() {
           {step === CreatePackSteps.Final && (
             <FinalStep
               attributes={attributes}
-              confirm={goToNextStep}
               backButton={renderBackButton()}
             />
           )}

@@ -16,14 +16,6 @@ const AddVoucher = ({ attributes, setAttributes, confirm, backButton }) => {
     console.log('Failed:', errorInfo);
   };
 
-  const handleVoucherCountUpdate = (e, id) => {
-    const { value } = e.target;
-    const current = { [id]: value };
-    const listUpdated = { ...attributes.vouchersCount, ...current };
-
-    setAttributes({ ...attributes, vouchersCount: listUpdated });
-  };
-
   const artistFilter = (i: SafetyDepositDraft) =>
     !(i.metadata.info.data.creators || []).find((c: Creator) => !c.verified);
 

@@ -8,6 +8,7 @@ export interface PackState extends AuctionState {
   cardsCount: number[];
   actionOnProve: string;
   distribution: string;
+  initPackValues: {};
 }
 
 export enum CreatePackSteps {

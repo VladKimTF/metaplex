@@ -3,7 +3,7 @@ import { Form, Input, Button, Select, Switch, DatePicker } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { sendTransactionWithRetry, useConnection } from '@oyster/common';
 
-import { CreatePackSteps } from '../createPackStepper/types';
+import { CreatePackSteps, PackState } from '../createPackStepper/types';
 import { getCreatePackInstructions } from './utils/getCreatePackInstructions';
 import { CreatePackFormValues } from './interface';
 
@@ -11,15 +11,18 @@ const { Option } = Select;
 const valueU32 = 4294967295;
 
 interface CreatePackProps {
-  confirm: (step?: CreatePackSteps) => void
+  confirm: (step?: CreatePackSteps) => void;
+  setAttributes: (values) => void;
+  attributes: PackState;
 }
 
-const CreatePack = ({ confirm }: CreatePackProps): ReactElement => {
+const CreatePack = ({ attributes, setAttributes, confirm }: CreatePackProps): ReactElement => {
   const wallet = useWallet();
   const connection = useConnection();
 
   const onSubmit = async (values: CreatePackFormValues) => {
     try {
+      setAttributes({ ...attributes, initPackValues: values });
       const { instructions, signers } = await getCreatePackInstructions({ values, wallet, connection })
 
       await sendTransactionWithRetry(
