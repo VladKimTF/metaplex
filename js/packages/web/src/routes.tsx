@@ -12,6 +12,8 @@ import {
   AuctionView,
   HomeView,
   StaticPageView,
+  PackView,
+  MyPacks,
 } from './views';
 import { AdminView } from './views/admin';
 import { PackCreateView } from './views/packCreate';
@@ -48,6 +50,16 @@ export function Routes() {
             <Route exact path="/artists/:id" component={() => <ArtistView />} />
             <Route exact path="/artists" component={() => <ArtistsView />} />
 
+            <Route
+              exact
+              path="/pack/:id?"
+              component={() => <PackView />}
+            />
+            <Route
+              exact
+              path="/packs"
+              component={() => <MyPacks />}
+            />
             <Route
               exact
               path="/auction/create/:step_param?"
