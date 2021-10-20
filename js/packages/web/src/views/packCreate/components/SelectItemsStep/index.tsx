@@ -2,7 +2,7 @@ import React, { memo, ReactElement, useMemo } from 'react';
 
 import { useUserArts } from '../../../../hooks';
 
-import ItemRow from './components/ItemRow';
+import ItemRow from '../ItemRow';
 
 import { SelectItemsStepProps } from './interface';
 import { artistFilter, isSelected } from './utils';
@@ -15,7 +15,7 @@ const SelectItemsStep = ({
   const listedItems = useMemo(() => items.filter(artistFilter), [items]);
 
   return (
-    <div style={{ padding: '20px 0' }}>
+    <div>
       {listedItems.map(item => (
         <ItemRow
           key={item.metadata.pubkey}

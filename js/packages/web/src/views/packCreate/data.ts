@@ -1,3 +1,4 @@
+import { PackDistributionType } from '@oyster/common';
 import { PackState } from './interface';
 
 export const INITIAL_PACK_STATE: PackState = {
@@ -12,5 +13,8 @@ export const INITIAL_PACK_STATE: PackState = {
   gapTimeType: 'minutes',
   winnersCount: 1,
   actionOnProve: 'Burn',
-  distribution: 'fixed',
+  distribution: {
+    distributionType: PackDistributionType.fixed,
+    distributions: {},
+  },
 };

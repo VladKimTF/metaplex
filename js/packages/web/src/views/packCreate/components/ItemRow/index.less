@@ -1,6 +1,6 @@
-@import '../../../../variables';
+@import '../../variables';
 
-@selected: #00ffbd;
+@input-bg: #121212;
 
 .pack-item-row {
   display: flex;
@@ -12,8 +12,26 @@
   box-sizing: border-box;
 
   &--selected {
-    border: 1px solid @selected;
+    border: 1px solid @metaplex-primary-color;
     padding: 15px;
+  }
+
+  .input-column {
+    display: flex;
+    align-items: center;
+    width: 120px;
+    margin-right: 40px;
+
+    .ant-input {
+      height: 56px;
+      border-radius: 8px;
+      background-color: @input-bg !important;
+
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 24px;
+      color: @white;
+    }
   }
 
   .preview-column {

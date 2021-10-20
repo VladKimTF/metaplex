@@ -1,15 +1,15 @@
 import React from 'react-dom';
-import { Steps } from 'antd';
+import { Steps, Button } from 'antd';
 
 import useWindowDimensions from '../../../../utils/layout';
 
-import { STEPS_TITLES } from './data';
+import { STEPS_TITLES, CONTINUE_TITLES } from './data';
 import { SidebarProps } from './interface';
 import { memo } from 'react';
 
 const { Step } = Steps;
 
-const Sidebar = ({ step }: SidebarProps) => {
+const Sidebar = ({ step, setStep }: SidebarProps) => {
   const { width } = useWindowDimensions();
 
   return (
@@ -23,6 +23,13 @@ const Sidebar = ({ step }: SidebarProps) => {
           <Step title={title} key={step} />
         ))}
       </Steps>
+
+      <Button
+        className="sidebar-btn secondary-btn"
+        onClick={() => setStep(step + 1)}
+      >
+        {CONTINUE_TITLES[step]}
+      </Button>
     </div>
   );
 };
