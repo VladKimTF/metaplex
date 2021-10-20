@@ -1,9 +1,9 @@
 import React from 'react-dom';
-import { Steps } from 'antd';
+import { Steps, Button } from 'antd';
 
 import useWindowDimensions from '../../../../utils/layout';
 
-import { STEPS_TITLES } from './data';
+import { STEPS_TITLES, CONTINUE_TITLES } from './data';
 import { SidebarProps } from './interface';
 import { memo } from 'react';
 
@@ -23,6 +23,10 @@ const Sidebar = ({ step }: SidebarProps) => {
           <Step title={title} key={step} />
         ))}
       </Steps>
+
+      <Button className="sidebar-btn secondary-btn">
+        {CONTINUE_TITLES[step]}
+      </Button>
     </div>
   );
 };
