@@ -9,7 +9,7 @@ import { memo } from 'react';
 
 const { Step } = Steps;
 
-const Sidebar = ({ step }: SidebarProps) => {
+const Sidebar = ({ step, setStep }: SidebarProps) => {
   const { width } = useWindowDimensions();
 
   return (
@@ -24,7 +24,10 @@ const Sidebar = ({ step }: SidebarProps) => {
         ))}
       </Steps>
 
-      <Button className="sidebar-btn secondary-btn">
+      <Button
+        className="sidebar-btn secondary-btn"
+        onClick={() => setStep(step + 1)}
+      >
         {CONTINUE_TITLES[step]}
       </Button>
     </div>

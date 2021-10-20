@@ -5,10 +5,13 @@ import { AuctionState } from '../auctionCreate';
 export interface PackState extends AuctionState {
   vouchersItems: SafetyDepositDraft[];
   selectedItems: Record<string, SafetyDepositDraft>;
+  distribution: {
+    distributionType: PackDistributionType;
+    distributions: Record<string, string>;
+  };
   vouchersCount: number[];
   cardsCount: Record<number, Record<number, string>>[];
   actionOnProve: string;
-  distribution: string;
   formValues?: CreatePackFormValues;
 }
 

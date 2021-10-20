@@ -1,5 +1,4 @@
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
-import { Row, Col } from 'antd';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { SafetyDepositDraft } from '../../actions/createAuctionManager';
@@ -8,9 +7,10 @@ import { PackState } from './interface';
 import { INITIAL_PACK_STATE } from './data';
 import { CreatePackSteps } from './types';
 
-import SelectItemsStep from './components/SelectItemsStep';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import SelectItemsStep from './components/SelectItemsStep';
+import AdjustQuantitiesStep from './components/AdjustQuantitiesStep';
 
 const PackCreateView = (): ReactElement => {
   const [step, setStep] = useState<CreatePackSteps>(
@@ -20,7 +20,7 @@ const PackCreateView = (): ReactElement => {
   const { step_param: stepParam }: { step_param: string } = useParams();
   const [attributes, setAttributes] = useState<PackState>(INITIAL_PACK_STATE);
 
-  const { selectedItems } = attributes;
+  const { selectedItems, distribution } = attributes;
 
   useEffect(() => {
     if (stepParam) {
@@ -65,13 +65,22 @@ const PackCreateView = (): ReactElement => {
 
   return (
     <div className="pack-create-wrapper">
-      <Sidebar step={step} />
+      <Sidebar step={step} setStep={setStep} />
       <div className="content-wrapper">
         <Header step={step} />
+
         {step === CreatePackSteps.SelectItems && (
           <SelectItemsStep
             selectedItems={selectedItems}
             handleSelectItem={handleSelectItem}
+          />
+        )}
+
+        {step === CreatePackSteps.AdjustQuantities && (
+          <AdjustQuantitiesStep
+            selectedItems={selectedItems}
+            distribution={distribution}
+            setPackState={setPackState}
           />
         )}
       </div>
