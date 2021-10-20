@@ -1,6 +1,7 @@
 export enum CreatePackSteps {
-  CreatePack,
-  AddVoucher,
-  AddCard,
-  Final,
+  SelectItems,
+  AdjustQuantities,
+  SalesSettings,
+  DesignAndInfo,
+  ReviewAndMint,
 }

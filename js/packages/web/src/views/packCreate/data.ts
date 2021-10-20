@@ -1,17 +1,19 @@
-import { CreatePackSteps, PackState } from './types';
+import { PackState } from './interface';
+import { CreatePackSteps } from './types';
 
 export const STEPS_TITLES: Record<CreatePackSteps, string> = {
-  [CreatePackSteps.CreatePack]: 'Create Pack',
-  [CreatePackSteps.AddVoucher]: 'Add Voucher',
-  [CreatePackSteps.AddCard]: 'Add Card',
-  [CreatePackSteps.Final]: 'Final',
+  [CreatePackSteps.SelectItems]: 'Select Items',
+  [CreatePackSteps.AdjustQuantities]: 'Adjust Quantities',
+  [CreatePackSteps.SalesSettings]: 'Sales Settings',
+  [CreatePackSteps.DesignAndInfo]: 'Info & Design',
+  [CreatePackSteps.ReviewAndMint]: 'Review & Mint',
 };
 
 export const INITIAL_PACK_STATE: PackState = {
   category: 3,
   reservationPrice: 0,
   items: [],
-  cardsItems: [],
+  selectedItems: {},
   vouchersItems: [],
   vouchersCount: [],
   cardsCount: [],

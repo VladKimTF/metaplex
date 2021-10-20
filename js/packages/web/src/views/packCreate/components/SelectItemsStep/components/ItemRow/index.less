@@ -1,0 +1,76 @@
+@import '../../../../variables';
+
+@selected: #00ffbd;
+
+.pack-item-row {
+  display: flex;
+  padding: 16px;
+  margin-bottom: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  &--selected {
+    border: 1px solid @selected;
+    padding: 15px;
+  }
+
+  .preview-column {
+    display: flex;
+    height: 64px;
+    width: 64px;
+    margin-right: 24px;
+  }
+
+  .name-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+
+    &__name {
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 24px;
+      margin: 0;
+      margin-bottom: 5px;
+      color: @white;
+    }
+
+    &__subtitle {
+      font-size: 14px;
+      line-height: 17px;
+      margin: 0;
+      color: @mid-grey-color;
+    }
+  }
+
+  .info-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    border-left: 1px solid @dark-grey-color;
+    padding-left: 16px;
+
+    &__subtitle {
+      font-size: 12px;
+      line-height: 12px;
+      margin: 0;
+      margin-bottom: 5px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: @grey-color;
+    }
+
+    &__value {
+      font-size: 16px;
+      line-height: 20px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      color: @white;
+    }
+  }
+}

@@ -4,7 +4,7 @@ import { AuctionState } from '../auctionCreate';
 
 export interface PackState extends AuctionState {
   vouchersItems: SafetyDepositDraft[];
-  cardsItems: SafetyDepositDraft[];
+  selectedItems: Record<string, SafetyDepositDraft>;
   vouchersCount: number[];
   cardsCount: Record<number, Record<number, string>>[];
   actionOnProve: string;
