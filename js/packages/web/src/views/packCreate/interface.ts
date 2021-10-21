@@ -2,7 +2,7 @@ import { PackDistributionType } from '@oyster/common';
 import { SafetyDepositDraft } from '../../actions/createAuctionManager';
 import { AuctionState } from '../auctionCreate';
 
-export interface PackState extends AuctionState {
+export interface PackState extends AuctionState, InfoFormState {
   vouchersItems: SafetyDepositDraft[];
   selectedItems: Record<string, SafetyDepositDraft>;
   distribution: {
@@ -17,11 +17,12 @@ export interface PackState extends AuctionState {
   redeemEndDate?: moment.Moment | null;
 }
 
-export interface CreatePackFormValues {
+export interface InfoFormState {
   name: string;
-  distributionType: PackDistributionType;
-  allowedAmountToRedeem: number;
   uri: string;
+}
+
+export interface CreatePackFormValues {
   redeemStartDate: moment.Moment;
   mutable: boolean;
 }

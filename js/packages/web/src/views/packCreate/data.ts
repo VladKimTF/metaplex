@@ -13,6 +13,7 @@ export const INITIAL_PACK_STATE: PackState = {
   gapTimeType: 'minutes',
   winnersCount: 1,
   actionOnProve: 'Burn',
+  allowedAmountToRedeem: 0,
   distribution: {
     distributionType: PackDistributionType.fixed,
     distributions: {},

@@ -12,7 +12,7 @@ export const HEADER_CONTENT: Record<CreatePackSteps, HeaderContentRecord> = {
     title: 'Pricing & Expiration ',
   },
   [CreatePackSteps.DesignAndInfo]: {
-    title: 'Design your pack and mint',
+    title: 'Design your pack',
   },
   [CreatePackSteps.ReviewAndMint]: {
     title: 'Review and mint your pack',

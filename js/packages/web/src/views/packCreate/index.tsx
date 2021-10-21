@@ -1,9 +1,10 @@
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { Form } from 'antd';
 
 import { SafetyDepositDraft } from '../../actions/createAuctionManager';
 
-import { PackState } from './interface';
+import { InfoFormState, PackState } from './interface';
 import { INITIAL_PACK_STATE } from './data';
 import { CreatePackSteps } from './types';
 
@@ -12,14 +13,16 @@ import Sidebar from './components/Sidebar';
 import SelectItemsStep from './components/SelectItemsStep';
 import AdjustQuantitiesStep from './components/AdjustQuantitiesStep';
 import SalesSettingsStep from './components/SalesSettingsStep';
+import DesignAndInfoStep from './components/DesignAndInfoStep';
 
 const PackCreateView = (): ReactElement => {
   const [step, setStep] = useState<CreatePackSteps>(
     CreatePackSteps.SelectItems,
   );
+  const [attributes, setAttributes] = useState<PackState>(INITIAL_PACK_STATE);
   const history = useHistory();
   const { step_param: stepParam }: { step_param: string } = useParams();
-  const [attributes, setAttributes] = useState<PackState>(INITIAL_PACK_STATE);
+  const [designForm] = Form.useForm<InfoFormState>();
 
   const { selectedItems, distribution, allowedAmountToRedeem, redeemEndDate } =
     attributes;
@@ -92,6 +95,10 @@ const PackCreateView = (): ReactElement => {
             redeemEndDate={redeemEndDate}
             setPackState={setPackState}
           />
+        )}
+
+        {step === CreatePackSteps.DesignAndInfo && (
+          <DesignAndInfoStep form={designForm} setPackState={setPackState} />
         )}
       </div>
     </div>
