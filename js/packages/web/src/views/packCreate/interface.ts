@@ -14,6 +14,7 @@ export interface PackState extends AuctionState {
   actionOnProve: string;
   formValues?: CreatePackFormValues;
   allowedAmountToRedeem: number;
+  redeemEndDate?: moment.Moment | null;
 }
 
 export interface CreatePackFormValues {
@@ -22,6 +23,5 @@ export interface CreatePackFormValues {
   allowedAmountToRedeem: number;
   uri: string;
   redeemStartDate: moment.Moment;
-  redeemEndDate: moment.Moment;
   mutable: boolean;
 }

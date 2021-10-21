@@ -11,6 +11,7 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import SelectItemsStep from './components/SelectItemsStep';
 import AdjustQuantitiesStep from './components/AdjustQuantitiesStep';
+import SalesSettingsStep from './components/SalesSettingsStep';
 
 const PackCreateView = (): ReactElement => {
   const [step, setStep] = useState<CreatePackSteps>(
@@ -20,7 +21,8 @@ const PackCreateView = (): ReactElement => {
   const { step_param: stepParam }: { step_param: string } = useParams();
   const [attributes, setAttributes] = useState<PackState>(INITIAL_PACK_STATE);
 
-  const { selectedItems, distribution, allowedAmountToRedeem } = attributes;
+  const { selectedItems, distribution, allowedAmountToRedeem, redeemEndDate } =
+    attributes;
 
   useEffect(() => {
     if (stepParam) {
@@ -81,6 +83,13 @@ const PackCreateView = (): ReactElement => {
             allowedAmountToRedeem={allowedAmountToRedeem}
             selectedItems={selectedItems}
             distribution={distribution}
+            setPackState={setPackState}
+          />
+        )}
+
+        {step === CreatePackSteps.SalesSettings && (
+          <SalesSettingsStep
+            redeemEndDate={redeemEndDate}
             setPackState={setPackState}
           />
         )}
