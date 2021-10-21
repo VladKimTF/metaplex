@@ -20,7 +20,7 @@ const PackCreateView = (): ReactElement => {
   const { step_param: stepParam }: { step_param: string } = useParams();
   const [attributes, setAttributes] = useState<PackState>(INITIAL_PACK_STATE);
 
-  const { selectedItems, distribution } = attributes;
+  const { selectedItems, distribution, allowedAmountToRedeem } = attributes;
 
   useEffect(() => {
     if (stepParam) {
@@ -78,6 +78,7 @@ const PackCreateView = (): ReactElement => {
 
         {step === CreatePackSteps.AdjustQuantities && (
           <AdjustQuantitiesStep
+            allowedAmountToRedeem={allowedAmountToRedeem}
             selectedItems={selectedItems}
             distribution={distribution}
             setPackState={setPackState}

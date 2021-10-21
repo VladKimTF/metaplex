@@ -7,12 +7,13 @@ export interface PackState extends AuctionState {
   selectedItems: Record<string, SafetyDepositDraft>;
   distribution: {
     distributionType: PackDistributionType;
-    distributions: Record<string, string>;
+    distributions: Record<string, number>;
   };
   vouchersCount: number[];
   cardsCount: Record<number, Record<number, string>>[];
   actionOnProve: string;
   formValues?: CreatePackFormValues;
+  allowedAmountToRedeem: number;
 }
 
 export interface CreatePackFormValues {

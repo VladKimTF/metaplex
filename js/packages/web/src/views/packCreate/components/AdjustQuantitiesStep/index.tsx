@@ -1,5 +1,6 @@
 import { PackDistributionType } from '@oyster/common';
 import React, { memo, ReactElement } from 'react';
+import { Input } from 'antd';
 
 import ItemRow from '../ItemRow';
 import SelectCard from '../SelectCard';
@@ -7,6 +8,7 @@ import SelectCard from '../SelectCard';
 import { AdjustQuantitiesStepProps } from './interface';
 
 const AdjustQuantitiesStep = ({
+  allowedAmountToRedeem,
   distribution,
   setPackState,
   selectedItems,
@@ -17,11 +19,17 @@ const AdjustQuantitiesStep = ({
       ? 'REDEEM PROBABILITY'
       : 'NUMBER OF NFTs';
 
+  const handleRedeemAmountChange = (value: string): void => {
+    setPackState({
+      allowedAmountToRedeem: parseInt(value),
+    });
+  };
+
   const handleDistributionChange = (pubKey: string, value: string): void => {
     setPackState({
       distribution: {
         ...distribution,
-        distributions: { ...distributions, [pubKey]: value },
+        distributions: { ...distributions, [pubKey]: parseInt(value) },
       },
     });
   };
@@ -37,6 +45,19 @@ const AdjustQuantitiesStep = ({
 
   return (
     <div className="quantities-step-wrapper">
+      <p className="quantities-step-wrapper__title">
+        Set number of redeem attempts
+      </p>
+      <p className="quantities-step-wrapper__subtitle">
+        Number of times user can try to redeem a card.
+      </p>
+      <Input
+        className="quantities-step-wrapper__input"
+        type="number"
+        value={allowedAmountToRedeem}
+        onChange={({ target: { value } }) => handleRedeemAmountChange(value)}
+      />
+
       <p className="quantities-step-wrapper__title">Select distribution type</p>
       <div className="cards-select">
         <SelectCard
