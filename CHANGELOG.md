@@ -25,6 +25,7 @@ incremented for features.
 - Fixes #840 - Claim button visible after claim.
 - Improve Candy Machine CLI `create_generative_art` command performance. (@0xCryptoSheik in #899)
 - Fixes an issue with Instant Sale when the auction is an english auction. By and claim buttons were broken.
+- Fix NFT Packs creation transaction failing when adding multiple items
 
 ### Breaking
 
