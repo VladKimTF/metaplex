@@ -1,3 +1,5 @@
+@scrollbar-color: #2c2c2c;
+
 .pack-view {
   &__list {
     display: flex;
@@ -212,8 +214,24 @@
   }
 
   &__cards {
+    max-height: 500px;
+    overflow: auto;
     margin-top: 30px;
     margin-bottom: 16px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: @scrollbar-color;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: @metaplex-primary-color;
+    border-radius: 10px;
   }
 
   &__cards > p {

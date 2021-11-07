@@ -5,7 +5,7 @@ import { Skeleton } from 'antd';
 
 const PackSidebar = ({ pack }: { pack?: ParsedAccount<PackSet> }) => (
   <div className="pack-view__sidebar">
-    <h4>{pack?.info?.name || <Skeleton paragraph={{ rows: 0 }} />}</h4>
+    <h4>{pack?.info?.name || <Skeleton title={{ width: 300 }} />}</h4>
     <div className="pack-view__info">
       <div className="info-item">
         <p>PACK OF</p>

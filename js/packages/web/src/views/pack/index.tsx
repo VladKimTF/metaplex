@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Row, Col } from 'antd';
 
 import Card from './components/Card';
@@ -9,13 +9,16 @@ import { useParams } from 'react-router';
 
 export const PackView = () => {
   const [openModal, setOpenModal] = useState(false);
-  const { id }: { id: string } = useParams();
-
+  const { packId }: { packId: string } = useParams();
   const { packs } = useMeta();
-  const pack = packs[id];
+  const pack = packs[packId];
 
-  const total = pack?.info?.allowedAmountToRedeem || 0;
+  const total = pack?.info?.packCards || 0;
   const mockBlocks = Array.from({ length: total }, (v, i) => i);
+
+  const handleCardClick = useCallback(() => {
+    setOpenModal(true);
+  }, [setOpenModal]);
 
   return (
     <div className="pack-view">
@@ -23,7 +26,7 @@ export const PackView = () => {
         <Col md={16}>
           <div className="pack-view__list">
             {mockBlocks.map((block, i) => (
-              <Card key={i} value={i} />
+              <Card key={i} value={i} onClick={handleCardClick} />
             ))}
           </div>
         </Col>

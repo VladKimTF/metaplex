@@ -49,6 +49,10 @@ import { createPipelineExecutor } from '../../utils/createPipelineExecutor';
 import { programIds } from '../..';
 import { getPackSets } from '../../models/packs/accounts/PackSet';
 import { processPackSets } from './processPackSets';
+import { getVouchersByMetadata } from '../../models/packs/accounts/PackVoucher';
+import { processPackVouchers } from './processPackVouchers';
+import { getCardsByPackSet } from '../../models/packs/accounts/PackCard';
+import { processPackCards } from './processPackCards';
 const MULTIPLE_ACCOUNT_BATCH_SIZE = 100;
 
 export const USE_SPEED_RUN = false;
@@ -236,6 +240,60 @@ export const pullPayoutTickets = async (
   }).then(forEach(processMetaplexAccounts));
 
   return tempCache;
+};
+
+export const pullPacks = async (
+  connection: Connection,
+  state: MetaState,
+): Promise<void> => {
+  const updateTemp = makeSetter(state);
+
+  const forEach =
+    (fn: ProcessAccountsFunc) => async (accounts: AccountAndPubkey[]) => {
+      for (const account of accounts.flat()) {
+        await fn(account, updateTemp);
+      }
+    };
+
+  const store = programIds().store;
+  if (store) {
+    await getPackSets({ connection, storeId: store }).then(
+      forEach(processPackSets),
+    );
+  }
+
+  // Fetch packs' cards
+  const fetchCardsPromises = Object.keys(state.packs).map(packSet =>
+    getCardsByPackSet({ connection, packSet }),
+  );
+
+  await Promise.all(fetchCardsPromises).then(cards =>
+    cards.forEach(forEach(processPackCards)),
+  );
+};
+
+export const pullVouchersByMetadata = async (
+  connection: Connection,
+  tempCache: MetaState,
+  metadata: StringPublicKey[],
+): Promise<void> => {
+  const updateTemp = makeSetter(tempCache);
+
+  const forEach =
+    (fn: ProcessAccountsFunc) => async (accounts: AccountAndPubkey[][]) => {
+      for (const account of accounts.flat()) {
+        await fn(account, updateTemp);
+      }
+    };
+
+  const promises = metadata.map(metadataKey =>
+    getVouchersByMetadata({
+      connection,
+      metadataPubKey: toPublicKey(metadataKey),
+    }),
+  );
+
+  await Promise.all(promises).then(forEach(processPackVouchers));
 };
 
 export const pullAuctionSubaccounts = async (
@@ -535,12 +593,7 @@ export const pullPage = async (
       }
     }
 
-    const store = programIds().store;
-    if (store) {
-      await getPackSets({ connection, storeId: store }).then(
-        forEach(processPackSets),
-      );
-    }
+    await pullPacks(connection, tempCache);
 
     if (page == 0) {
       console.log('-------->Page 0, pulling creators and store');
@@ -552,6 +605,7 @@ export const pullPage = async (
         ],
       }).then(forEach(processMetaplexAccounts));
 
+      const store = programIds().store;
       if (store) {
         const storeAcc = await connection.getAccountInfo(store);
         if (storeAcc) {
@@ -784,8 +838,6 @@ export const loadAccounts = async (connection: Connection) => {
   const updateState = makeSetter(state);
   const forEachAccount = processingAccounts(updateState);
 
-  const STORE_ID = programIds().store;
-
   const forEach =
     (fn: ProcessAccountsFunc) => async (accounts: AccountAndPubkey[]) => {
       for (const account of accounts) {
@@ -817,10 +869,7 @@ export const loadAccounts = async (connection: Connection) => {
     pullMetadataByCreators(connection, state, updateState);
   const loadEditions = () =>
     pullEditions(connection, updateState, state, state.metadata);
-  const loadPacks = () =>
-    getPackSets({ connection, storeId: STORE_ID }).then(
-      forEachAccount(processPackSets),
-    );
+  const loadPacks = () => pullPacks(connection, state);
 
   const loading = [
     loadCreators().then(loadMetadata).then(loadEditions),
@@ -981,6 +1030,17 @@ export const makeSetter =
       state.storeIndexer = state.storeIndexer.sort((a, b) =>
         a.info.page.sub(b.info.page).toNumber(),
       );
+    } else if (prop === 'packCardsByPackSet') {
+      if (!state.packCardsByPackSet[key]) {
+        state.packCardsByPackSet[key] = [];
+      }
+
+      const alreadyHasInState = state.packCardsByPackSet[key].some(
+        ({ pubkey }) => pubkey === value.pubkey,
+      );
+      if (!alreadyHasInState) {
+        state.packCardsByPackSet[key].push(value);
+      }
     } else {
       state[prop][key] = value;
     }

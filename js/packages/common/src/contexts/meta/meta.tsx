@@ -17,6 +17,7 @@ import {
   pullPage,
   pullPayoutTickets,
   pullStoreMetadata,
+  pullVouchersByMetadata,
 } from '.';
 import { StringPublicKey, TokenAccount, useUserAccounts } from '../..';
 
@@ -68,7 +69,11 @@ export function MetaProvider({ children = null as any }) {
       setIsLoading(true);
     }
     setIsLoading(true);
+
     const nextState = await pullStoreMetadata(connection, state);
+    const metadataPubkeys = Object.keys(nextState.metadataByMetadata);
+    await pullVouchersByMetadata(connection, nextState, metadataPubkeys);
+
     setIsLoading(false);
     setState(nextState);
     await updateMints(nextState.metadataByMint);
@@ -197,6 +202,9 @@ export function MetaProvider({ children = null as any }) {
           );
         }
 
+        const metadataPubkeys = Object.keys(nextState.metadataByMetadata);
+        await pullVouchersByMetadata(connection, nextState, metadataPubkeys);
+
         const auction = window.location.href.match(/#\/auction\/(\w+)/);
         const billing = window.location.href.match(
           /#\/auction\/(\w+)\/billing/,
@@ -238,6 +246,9 @@ export function MetaProvider({ children = null as any }) {
       nextState = !USE_SPEED_RUN
         ? await loadAccounts(connection)
         : await limitedLoadAccounts(connection);
+
+      const metadataPubkeys = Object.keys(nextState.metadataByMetadata);
+      await pullVouchersByMetadata(connection, nextState, metadataPubkeys);
 
       console.log('------->Query finished');
 

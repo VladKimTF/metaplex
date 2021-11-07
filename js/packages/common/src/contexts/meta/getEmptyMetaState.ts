@@ -27,4 +27,7 @@ export const getEmptyMetaState = (): MetaState => ({
   auctionCaches: {},
   storeIndexer: [],
   packs: {},
+  packCards: {},
+  packCardsByPackSet: {},
+  vouchers: {},
 });
