@@ -43,7 +43,7 @@ export async function requestCardToRedeem({
 
   const provingProcess = await findProvingProcessProgramAddress(
     packSetKey,
-    toPublicKey(wallet),
+    toPublicKey(editionMint),
   );
 
   const data = Buffer.from(serialize(PACKS_SCHEMA, value));

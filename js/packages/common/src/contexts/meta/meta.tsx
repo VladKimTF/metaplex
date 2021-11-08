@@ -71,8 +71,8 @@ export function MetaProvider({ children = null as any }) {
     setIsLoading(true);
 
     const nextState = await pullStoreMetadata(connection, state);
-    const metadataPubkeys = Object.keys(nextState.metadataByMetadata);
-    await pullVouchersByMetadata(connection, nextState, metadataPubkeys);
+    // const metadataPubkeys = Object.keys(nextState.metadataByMetadata);
+    // await pullVouchersByMetadata(connection, nextState, metadataPubkeys);
 
     setIsLoading(false);
     setState(nextState);

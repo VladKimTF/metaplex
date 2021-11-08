@@ -57,7 +57,7 @@ const getVouchersByMasterEdition = ({
   vouchers,
 }: {
   metadata: ParsedAccount<Metadata>[];
-  vouchers: ExtendedVoucherByKey;
+  vouchers: VoucherByKey;
 }): ExtendedVoucherByKey =>
   metadata.reduce<ExtendedVoucherByKey>((acc, metadata) => {
     if (metadata.info.masterEdition) {
@@ -67,7 +67,6 @@ const getVouchersByMasterEdition = ({
       );
 
       if (voucher) {
-        console.log(metadata.info);
         acc[metadata.info.masterEdition] = {
           ...voucher,
           masterEdition: metadata.info.masterEdition,

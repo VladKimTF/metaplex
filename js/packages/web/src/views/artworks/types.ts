@@ -3,7 +3,7 @@ import { PackSet } from '@oyster/common/dist/lib/models/packs/accounts/PackSet';
 import { PackVoucher } from '@oyster/common/dist/lib/models/packs/accounts/PackVoucher';
 
 export type ExtendedVoucher = ParsedAccount<PackVoucher> & {
-  mint: StringPublicKey;
+  mint?: StringPublicKey;
   masterEdition: StringPublicKey;
   masterEditionMint: StringPublicKey;
 };

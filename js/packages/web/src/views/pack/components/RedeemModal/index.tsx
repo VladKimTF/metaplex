@@ -17,7 +17,6 @@ import {
 
 import RedeemCard from './components/RedeemCard';
 import { usePackMetadata } from './hooks/usePackMetadata';
-import { useUserArts } from '../../../../hooks';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { sendRequestCard } from './transactions/requestCard';
 import { useUserVouchersByEdition } from '../../../artworks/hooks/useUserVouchersByEdition';
@@ -31,7 +30,7 @@ const RedeemModal = ({
   isModalVisible,
   onClose,
 }: RedeemModalProps): ReactElement => {
-  const { packs, vouchers, metadataByMint } = useMeta();
+  const { packs } = useMeta();
   const { packId, editionId }: { packId: string; editionId: string } =
     useParams();
   const wallet = useWallet();
@@ -41,19 +40,11 @@ const RedeemModal = ({
 
   const pack = packs[packId];
   const metadata = usePackMetadata({ packId });
-  const ownedMetadata = useUserArts();
   const numberOfNFTs = pack?.info?.packCards || 0;
   const numberOfAttempts = pack?.info?.allowedAmountToRedeem || 0;
 
-  // const voucherMetadata = ownedMetadata.find(
-  //   metadata => metadata.edition?.pubkey === editionId,
-  // );
-  // const voucher = Object.values(vouchers).find(
-  //   voucher => voucher.info.packSet === pack.pubkey,
-  // );
-
   const handleClaim = async () => {
-    if (!wallet.publicKey || !wallet) return;
+    if (!wallet.publicKey || !wallet || !userVouchers[editionId]) return;
 
     // const provingProcess = await findProvingProcessProgramAddress(
     //   toPublicKey(pack.pubkey),
@@ -62,6 +53,8 @@ const RedeemModal = ({
 
     const { pubkey, masterEdition, masterEditionMint, mint } =
       userVouchers[editionId];
+
+    if (!mint) return;
 
     const voucherTokenAccount = accountByMint.get(mint);
 
@@ -119,7 +112,7 @@ const RedeemModal = ({
           </p>
 
           <button className="modal-redeem__open-nft" onClick={handleClaim}>
-            <span>Open first NFT</span>
+            <span>Open NFT</span>
           </button>
         </div>
       </div>

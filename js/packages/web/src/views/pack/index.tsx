@@ -13,7 +13,7 @@ export const PackView = () => {
   const { packs } = useMeta();
   const pack = packs[packId];
 
-  const total = pack?.info?.packCards || 0;
+  const total = pack?.info?.allowedAmountToRedeem || 0;
   const mockBlocks = Array.from({ length: total }, (v, i) => i);
 
   const handleCardClick = useCallback(() => {

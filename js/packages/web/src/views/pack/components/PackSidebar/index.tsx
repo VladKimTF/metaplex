@@ -9,9 +9,7 @@ const PackSidebar = ({ pack }: { pack?: ParsedAccount<PackSet> }) => (
     <div className="pack-view__info">
       <div className="info-item">
         <p>PACK OF</p>
-        <p className="info-count">
-          {pack?.info?.allowedAmountToRedeem || 0} NFTs
-        </p>
+        <p className="info-count">{pack?.info?.packCards || 0} NFTs</p>
       </div>
     </div>
     <div className="pack-view__description-block">
