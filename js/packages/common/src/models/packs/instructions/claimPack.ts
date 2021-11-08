@@ -9,10 +9,13 @@ import { serialize } from 'borsh';
 
 import { programIds, toPublicKey, StringPublicKey } from '../../../utils';
 import { ClaimPackArgs, getEdition, getMetadata, PACKS_SCHEMA } from '../../..';
-import { findProvingProcessProgramAddress } from '../find';
+import {
+  findPackCardProgramAddress,
+  findProvingProcessProgramAddress,
+} from '../find';
 
 interface Params {
-  packCard: string;
+  index: number;
   packSetKey: PublicKey;
   wallet: PublicKey;
   voucherToken: StringPublicKey;
@@ -23,7 +26,7 @@ interface Params {
 }
 
 export async function claimPack({
-  packCard,
+  index,
   packSetKey,
   wallet,
   voucherToken,
@@ -40,7 +43,7 @@ export async function claimPack({
     packSetKey,
     wallet,
   );
-  // const packCard = await findPackCardProgramAddress(packSetKey, index);
+  const packCard = await findPackCardProgramAddress(packSetKey, index);
 
   const newMetadata = await getMetadata(newMint);
   const metadata = await getMetadata(metadataMint);
