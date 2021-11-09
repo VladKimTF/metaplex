@@ -101,6 +101,7 @@ export interface MetaContextState extends MetaState {
   pullBillingPage: (auctionAddress: StringPublicKey) => void;
   pullAllSiteData: () => void;
   pullAllMetadata: () => void;
+  pullPackageData: () => void;
 }
 
 export type AccountAndPubkey = {

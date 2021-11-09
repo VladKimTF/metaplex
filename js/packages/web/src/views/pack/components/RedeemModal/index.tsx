@@ -45,7 +45,7 @@ const RedeemModal = ({
   const connection = useConnection();
   const { accountByMint } = useUserAccounts();
   const userVouchers = useUserVouchersByEdition();
-  const [modalState, setModalState] = useState<openState>(openState.Found);
+  const [modalState, setModalState] = useState<openState>(openState.Ready);
 
   const pack = packs[packId];
   const metadata = usePackMetadata({ packId });

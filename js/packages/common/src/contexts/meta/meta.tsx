@@ -14,6 +14,7 @@ import { useStore } from '../store';
 import { AuctionData, BidderMetadata, BidderPot } from '../../actions';
 import {
   pullAuctionSubaccounts,
+  pullPacks,
   pullPage,
   pullPayoutTickets,
   pullStoreMetadata,
@@ -142,6 +143,14 @@ export function MetaProvider({ children = null as any }) {
 
     setState(nextState);
     await updateMints(nextState.metadataByMint);
+    return;
+  }
+
+  async function pullPackageData() {
+    setIsLoading(true);
+    await pullPacks(connection, state);
+    await pullAllMetadata();
+    setIsLoading(false);
     return;
   }
 
@@ -346,6 +355,7 @@ export function MetaProvider({ children = null as any }) {
         pullAuctionPage,
         pullAllMetadata,
         pullBillingPage,
+        pullPackageData,
         // @ts-ignore
         pullAllSiteData,
         isLoading,
