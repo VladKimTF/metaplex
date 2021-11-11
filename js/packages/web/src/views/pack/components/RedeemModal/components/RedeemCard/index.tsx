@@ -5,7 +5,7 @@ import { ArtContent } from '../../../../../../components/ArtContent';
 
 interface IPropsRedeemCard {
   item: ParsedAccount<Metadata>;
-  probability: number;
+  probability: string;
 }
 
 const RedeemCard = ({
@@ -22,7 +22,7 @@ const RedeemCard = ({
       </div>
     </div>
     <div className="modal-redeem__percentage">
-      <p>{`${probability.toFixed(1)}% chance`}</p>
+      <p>{`${probability}% chance`}</p>
     </div>
   </div>
 );

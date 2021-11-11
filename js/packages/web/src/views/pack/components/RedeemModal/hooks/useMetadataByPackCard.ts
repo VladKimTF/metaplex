@@ -8,7 +8,7 @@ import { BN } from 'bn.js';
 import { useMemo } from 'react';
 
 type MetadataWithProbability = ParsedAccount<Metadata> & {
-  probability: number;
+  probability: string;
 };
 type PackMetadataByPackCard = Record<string, MetadataWithProbability>;
 
@@ -36,7 +36,10 @@ export const useMetadataByPackCard = (
             : info.weight;
           packMetadata[pubkey] = {
             ...metadataByMasterEdition[info.master],
-            probability: calculateProbability(probCount, total.toNumber()),
+            probability: calculateProbability(
+              probCount,
+              total.toNumber(),
+            ).toFixed(1),
           };
           return packMetadata;
         },
@@ -49,5 +52,8 @@ export const useMetadataByPackCard = (
 };
 
 function calculateProbability(count: number, total: number): number {
+  if (total === 0) {
+    return 0;
+  }
   return (count * 100) / total;
 }
