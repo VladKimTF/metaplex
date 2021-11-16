@@ -13,7 +13,8 @@ import { useUserArts } from '../../hooks';
 import { InfoFormState, PackState } from './interface';
 import { INITIAL_PACK_STATE } from './data';
 import { CreatePackSteps } from './types';
-import { packItemsFilter, vouchersFilter } from './utils';
+import { packItemsFilter, vouchersFilter, exceededPacksCountNotification } from './utils';
+import { MAX_PACKS_CREATION_COUNT } from '../../constants';
 import useStep from './hooks/useStep';
 
 import Header from './components/Header';
@@ -83,6 +84,10 @@ export const PackCreateView = (): ReactElement => {
         delete updatedSelectedItems[metadata.pubkey];
       } else {
         updatedSelectedItems[metadata.pubkey] = item;
+        if(Object.keys(updatedSelectedItems).length > MAX_PACKS_CREATION_COUNT) {
+          exceededPacksCountNotification();
+          return;
+        }
       }
 
       const isUnlimitedSupply = masterEdition?.info.maxSupply === undefined;
