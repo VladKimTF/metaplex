@@ -85,7 +85,7 @@ export const ArtCard = (props: ArtCardProps) => {
         <MetaAvatar creators={creators} size={32} />
         <div className="edition-badge">{badge}</div>
       </div>
-      <div className="art-content__wrapper">
+      <div className="art-content-wrapper">
         <ArtContent
           pubkey={pubkey}
           uri={image}
@@ -94,6 +94,7 @@ export const ArtCard = (props: ArtCardProps) => {
           preview={preview}
           height={height}
           width={width}
+          className="auction-image no-events"
         />
       </div>
       <Meta
