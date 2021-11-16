@@ -17,6 +17,7 @@ import {
   pullPayoutTickets,
   pullStoreMetadata,
   pullPacks,
+  pullPack,
 } from '.';
 import { StringPublicKey, TokenAccount, useUserAccounts } from '../..';
 
@@ -121,7 +122,6 @@ export function MetaProvider({ children = null as any }) {
     return nextState;
   }
 
-  // This works, maybe use it on a pack page?
   async function pullItemsPage(
     userTokenAccounts: TokenAccount[],
   ): Promise<void> {
@@ -135,6 +135,7 @@ export function MetaProvider({ children = null as any }) {
       setIsLoading(true);
     }
 
+    // ToDo: Add feature flag check
     const packsState = await pullPacks(connection, state);
 
     const nextState = await pullYourMetadata(
@@ -143,6 +144,32 @@ export function MetaProvider({ children = null as any }) {
       packsState,
     );
 
+    await updateMints(nextState.metadataByMint);
+
+    setState(nextState);
+  }
+
+  async function pullPackPage(
+    userTokenAccounts: TokenAccount[],
+    packSetKey: StringPublicKey,
+  ): Promise<void> {
+    if (isLoading) {
+      return;
+    }
+
+    if (!storeAddress && isReady) {
+      return setIsLoading(false);
+    } else if (!state.store) {
+      setIsLoading(true);
+    }
+
+    const packState = await pullPack({ connection, state, packSetKey });
+
+    const nextState = await pullYourMetadata(
+      connection,
+      userTokenAccounts,
+      packState,
+    );
     await updateMints(nextState.metadataByMint);
 
     setState(nextState);
@@ -358,6 +385,7 @@ export function MetaProvider({ children = null as any }) {
         // @ts-ignore
         pullAllSiteData,
         pullItemsPage,
+        pullPackPage,
         isLoading,
       }}
     >
