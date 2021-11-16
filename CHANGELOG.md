@@ -26,10 +26,15 @@ incremented for features.
 - Fixes #840 - Claim button visible after claim.
 - Improve Candy Machine CLI `create_generative_art` command performance. (@0xCryptoSheik in #899)
 - Fixes an issue with Instant Sale when the auction is an english auction. By and claim buttons were broken.
+- Fix flickering button state (myBidRedemption) and claim button state
+- Fixes open sale button state issue
+- Fix Undefined value in Current Sale UI
+- Fix #830 - secondary sale flagging
+- Fix NFT Packs creation transaction failing when adding multiple items
 
 ### Breaking
 
-- N/A
+- Remove undocumented graphql package
 
 ## [1.0.0] - 2021-10-30
 

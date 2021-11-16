@@ -4,13 +4,7 @@ import { CheckOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { BN } from 'bn.js';
-import {
-  getMetadata,
-  getMetadataByPubkey,
-  useConnection,
-  useMeta,
-  useUserAccounts,
-} from '@oyster/common';
+import { useConnection, useMeta, useUserAccounts } from '@oyster/common';
 
 import RedeemCard from './components/RedeemCard';
 import { useMetadataByPackCard } from './hooks/useMetadataByPackCard';
@@ -84,7 +78,7 @@ const RedeemModal = ({
     const packCardEdition = masterEditions[packCardMetadata.info.masterEdition];
     const packCardEditionIndex = packCardEdition.info.supply.toNumber() + 1;
 
-    const newMint = await sendClaimPack({
+    await sendClaimPack({
       connection,
       wallet,
       index: packCardToRedeemIndex,
@@ -96,15 +90,8 @@ const RedeemModal = ({
       edition: new BN(packCardEditionIndex),
     });
 
-    const newMetadataPubkey = await getMetadata(newMint);
-    const newMetadata = await getMetadataByPubkey(
-      connection,
-      newMetadataPubkey,
-    );
-
-    console.log(newMetadata);
-
     setModalState(openState.Found);
+
     setTimeout(() => handleClose(), CLOSE_TIMEOUT);
   };
 
