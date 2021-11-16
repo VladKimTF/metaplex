@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { queryExtendedMetadata } from './queryExtendedMetadata';
-import { subscribeAccountsChange } from './subscribeAccountsChange';
 import { getEmptyMetaState } from './getEmptyMetaState';
 import {
   limitedLoadAccounts,
@@ -17,6 +16,8 @@ import {
   pullPage,
   pullPayoutTickets,
   pullStoreMetadata,
+  pullPacks,
+  pullPack,
 } from '.';
 import { StringPublicKey, TokenAccount, useUserAccounts } from '../..';
 
@@ -119,6 +120,59 @@ export function MetaProvider({ children = null as any }) {
     setState(nextState);
     await updateMints(nextState.metadataByMint);
     return nextState;
+  }
+
+  async function pullItemsPage(
+    userTokenAccounts: TokenAccount[],
+  ): Promise<void> {
+    if (isLoading) {
+      return;
+    }
+
+    if (!storeAddress && isReady) {
+      return setIsLoading(false);
+    } else if (!state.store) {
+      setIsLoading(true);
+    }
+
+    // ToDo: Add feature flag check
+    const packsState = await pullPacks(connection, state);
+
+    const nextState = await pullYourMetadata(
+      connection,
+      userTokenAccounts,
+      packsState,
+    );
+
+    await updateMints(nextState.metadataByMint);
+
+    setState(nextState);
+  }
+
+  async function pullPackPage(
+    userTokenAccounts: TokenAccount[],
+    packSetKey: StringPublicKey,
+  ): Promise<void> {
+    if (isLoading) {
+      return;
+    }
+
+    if (!storeAddress && isReady) {
+      return setIsLoading(false);
+    } else if (!state.store) {
+      setIsLoading(true);
+    }
+
+    const packState = await pullPack({ connection, state, packSetKey });
+
+    const nextState = await pullYourMetadata(
+      connection,
+      userTokenAccounts,
+      packState,
+    );
+    await updateMints(nextState.metadataByMint);
+
+    setState(nextState);
   }
 
   async function pullAllSiteData() {
@@ -289,23 +343,7 @@ export function MetaProvider({ children = null as any }) {
       console.log('no update is running, updating.');
       update(undefined, undefined, userAccounts);
     }
-  }, [
-    connection,
-    setState,
-    updateMints,
-    storeAddress,
-    isReady,
-    page,
-    userAccounts.length > 0,
-  ]);
-
-  useEffect(() => {
-    if (isLoading) {
-      return;
-    }
-
-    return subscribeAccountsChange(connection, () => state, setState);
-  }, [connection, setState, isLoading, state]);
+  }, [connection, storeAddress, isReady, page, userAccounts]);
 
   // TODO: fetch names dynamically
   // TODO: get names for creators
@@ -346,6 +384,8 @@ export function MetaProvider({ children = null as any }) {
         pullBillingPage,
         // @ts-ignore
         pullAllSiteData,
+        pullItemsPage,
+        pullPackPage,
         isLoading,
       }}
     >

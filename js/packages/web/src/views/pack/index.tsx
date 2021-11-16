@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Row, Col } from 'antd';
 
 import Card from './components/Card';
@@ -14,7 +14,7 @@ export const PackView = () => {
   const { packId, editionId }: { packId: string; editionId?: string } =
     useParams();
   const { packs } = useMeta();
-  const { isLoading, mockBlocks, packMetadata } = usePackState(
+  const { isLoading, mockBlocks, packMetadata, handleFetch } = usePackState(
     packId,
     editionId,
   );
@@ -29,6 +29,16 @@ export const PackView = () => {
 
     setOpenModal(true);
   }, [setOpenModal]);
+
+  const handleCloseModal = async () => {
+    setOpenModal(false);
+  };
+
+  useEffect(() => {
+    if (!openModal) {
+      handleFetch();
+    }
+  }, [openModal]);
 
   return (
     <div className="pack-view">
@@ -55,10 +65,7 @@ export const PackView = () => {
         </Col>
       </Row>
 
-      <RedeemModal
-        isModalVisible={openModal}
-        onClose={() => setOpenModal(false)}
-      />
+      <RedeemModal isModalVisible={openModal} onClose={handleCloseModal} />
     </div>
   );
 };

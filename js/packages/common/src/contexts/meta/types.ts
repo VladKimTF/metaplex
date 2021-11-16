@@ -1,4 +1,5 @@
 import { AccountInfo } from '@solana/web3.js';
+import { TokenAccount } from '../..';
 import {
   AuctionData,
   AuctionDataExtended,
@@ -94,6 +95,7 @@ export interface MetaContextState extends MetaState {
   update: (
     auctionAddress?: any,
     bidderAddress?: any,
+    userTokenAccounts?: TokenAccount[],
   ) => [
     ParsedAccount<AuctionData>,
     ParsedAccount<BidderPot>,
@@ -103,6 +105,11 @@ export interface MetaContextState extends MetaState {
   pullBillingPage: (auctionAddress: StringPublicKey) => void;
   pullAllSiteData: () => void;
   pullAllMetadata: () => void;
+  pullItemsPage: (userTokenAccounts: TokenAccount[]) => Promise<void>;
+  pullPackPage: (
+    userTokenAccounts: TokenAccount[],
+    packSetKey: StringPublicKey,
+  ) => Promise<void>;
 }
 
 export type AccountAndPubkey = {
